@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Football Position Scout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; }
+        .card { border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-primary { background-color: #2c3e50; border: none; }
+        .btn-primary:hover { background-color: #1a252f; }
+        .form-label { font-weight: bold; color: #2c3e50; }
+        .stat-slider { accent-color: #27ae60; }
+        .question-card {
+            background: #f8fff9;
+            border-left: 4px solid #27ae60;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+        }
+        .question-card .form-check { margin-bottom: 6px; }
+        .question-card .form-check:last-child { margin-bottom: 0; }
+        .question-title { font-weight: 600; color: #2c3e50; margin-bottom: 10px; font-size: 0.95rem; }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e3c72;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">⚽ Find My Position</h1>
+        <p class="lead">Fill in your attributes and find your ideal position on the pitch!</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card p-4">
+                <form action="/calculate" method="post">
+
+                    <!-- PLAYER INFO -->
+                    <div class="section-title">👤 Player Info</div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Player Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Ex: Adrian" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Preferred Foot</label>
+                            <select name="foot" class="form-select">
+                                <option value="Right">Right</option>
+                                <option value="Left">Left</option>
+                                <option value="Both">Both</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ATTRIBUTES -->
+                    <div class="section-title">📊 Physical & Technical Attributes</div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3" th:each="attr : ${T(com.footballscout.model.Attribute).values()}">
+                            <label th:for="${attr}" class="form-label" th:text="${attr}"></label>
+                            <input type="range" th:name="${#strings.toLowerCase(attr)}"
+                                   class="form-range stat-slider" min="1" max="99" value="50"
+                                   oninput="this.nextElementSibling.value = this.value">
+                            <output class="fw-bold text-success">50</output>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- TACTICAL QUESTIONS -->
+                    <div class="section-title">🧠 Tactical Profile — 10 Questions</div>
+
+                    <!-- Q1: Cut Inside -->
+                    <div class="question-card">
+                        <div class="question-title">1. When playing on the wing, what is your primary instinct?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="cutInside" id="cutA" value="true" required>
+                            <label class="form-check-label" for="cutA">Cut inside towards goal for a shot</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="cutInside" id="cutB" value="false">
+                            <label class="form-check-label" for="cutB">Hug the touchline and deliver a cross</label>
+                        </div>
+                    </div>
+
+                    <!-- Q2: Avoid Contact -->
+                    <div class="question-card">
+                        <div class="question-title">2. A powerful striker charges at you with the ball. What do you do?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="avoidContact" id="contactA" value="true" required>
+                            <label class="form-check-label" for="contactA">Read the play and intercept without physical contact</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="avoidContact" id="contactB" value="false">
+                            <label class="form-check-label" for="contactB">Go in hard and win it physically</label>
+                        </div>
+                    </div>
+
+                    <!-- Q3: High Stamina -->
+                    <div class="question-card">
+                        <div class="question-title">3. How often do you find yourself in both penalty boxes during a match?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="highStamina" id="staminaA" value="true" required>
+                            <label class="form-check-label" for="staminaA">All the time — I cover every inch of the pitch</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="highStamina" id="staminaB" value="false">
+                            <label class="form-check-label" for="staminaB">I pick my moments and stay disciplined in position</label>
+                        </div>
+                    </div>
+
+                    <!-- Q4: Long Passer -->
+                    <div class="question-card">
+                        <div class="question-title">4. What is your signature pass?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="longPasser" id="passA" value="true" required>
+                            <label class="form-check-label" for="passA">A long diagonal ball over the defence to create a chance</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="longPasser" id="passB" value="false">
+                            <label class="form-check-label" for="passB">A short, reliable pass to keep possession safe</label>
+                        </div>
+                    </div>
+
+                    <!-- Q5: Ball to Feet -->
+                    <div class="question-card">
+                        <div class="question-title">5. Where do you prefer to receive the ball?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ballToFeet" id="receiveA" value="true" required>
+                            <label class="form-check-label" for="receiveA">Directly to my feet so I can dribble immediately</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ballToFeet" id="receiveB" value="false">
+                            <label class="form-check-label" for="receiveB">Into space ahead of me — I'll run onto it</label>
+                        </div>
+                    </div>
+
+                    <!-- Q6: Tackler -->
+                    <div class="question-card">
+                        <div class="question-title">6. Are you the type of player who gets their kit dirty with sliding tackles?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tackler" id="tackleA" value="true" required>
+                            <label class="form-check-label" for="tackleA">Yes — I throw myself into every challenge</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tackler" id="tackleB" value="false">
+                            <label class="form-check-label" for="tackleB">No — I prefer to win the ball through positioning</label>
+                        </div>
+                    </div>
+
+                    <!-- Q7: Presser -->
+                    <div class="question-card">
+                        <div class="question-title">7. Your team loses the ball in the opponent's half. What do you do immediately?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="presser" id="pressA" value="true" required>
+                            <label class="form-check-label" for="pressA">Press like crazy to win it back instantly</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="presser" id="pressB" value="false">
+                            <label class="form-check-label" for="pressB">Drop back calmly and reorganise the defensive shape</label>
+                        </div>
+                    </div>
+
+                    <!-- Q8: Playmaker -->
+                    <div class="question-card">
+                        <div class="question-title">8. In a team system, how do you see yourself?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="playmaker" id="playA" value="true" required>
+                            <label class="form-check-label" for="playA">The brain — I orchestrate play and dictate tempo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="playmaker" id="playB" value="false">
+                            <label class="form-check-label" for="playB">The finisher — I wait for the moment and then strike</label>
+                        </div>
+                    </div>
+
+                    <!-- Q9: Risk Taker -->
+                    <div class="question-card">
+                        <div class="question-title">9. How much do you risk when you have the ball in your own half?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="riskTaker" id="riskA" value="true" required>
+                            <label class="form-check-label" for="riskA">I try to dribble past the first man to create an overload</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="riskTaker" id="riskB" value="false">
+                            <label class="form-check-label" for="riskB">Zero risk — safe pass to the side, always</label>
+                        </div>
+                    </div>
+
+                    <!-- Q10: Defender 85th -->
+                    <div class="question-card">
+                        <div class="question-title">10. Your team leads 1–0 in the 85th minute. Where are you?</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="defender85" id="def85A" value="true" required>
+                            <label class="form-check-label" for="def85A">In our box, heading every ball away with my life</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="defender85" id="def85B" value="false">
+                            <label class="form-check-label" for="def85B">Midfield, waiting to spring a counter-attack</label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Find My Position!</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
