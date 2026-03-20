@@ -41,6 +41,7 @@ public class DataStore {
                 profiles.add(profile);
             }
         } catch (SQLException e) {
+            System.err.println("DATABASE ERROR: " + e.getMessage());
             e.printStackTrace();
         }
         return profiles;
