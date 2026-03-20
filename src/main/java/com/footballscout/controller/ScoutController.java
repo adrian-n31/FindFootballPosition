@@ -28,6 +28,9 @@ public class ScoutController {
 
     @PostMapping("/calculate")
     public String calculate(@RequestParam Map<String, String> allParams, Model model) {
+
+        System.out.println("DB_URL = " + System.getenv("DB_URL"));
+
         Map<Attribute, Integer> stats = new HashMap<>();
         stats.put(Attribute.PACE,      Integer.parseInt(allParams.get("pace")));
         stats.put(Attribute.SHOOTING,  Integer.parseInt(allParams.get("shooting")));
