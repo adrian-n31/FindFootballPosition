@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: FindFootballPosition
+    runtime: java
+    buildCommand: ./gradlew bootJar --no-daemon
+    startCommand: java -jar build/libs/Proiect_FootballPosition-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://sql7.freesqldatabase.com:3306/sql7820754
+      - key: DB_USER
+        value: sql7820754
+      - key: DB_PASS
+        value: 9lhmfXvTFl
